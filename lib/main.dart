@@ -1,5 +1,6 @@
 import 'package:aullet/viewmodels/expense_viewmodel.dart';
 import 'package:aullet/viewmodels/profile_view_model.dart';
+import 'package:aullet/views/expenses/add_expense_view.dart';
 import 'package:aullet/views/profile/profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -56,6 +57,7 @@ class MyApp extends StatelessWidget {
               '/home': (context) => const HomeView(),
               '/profile': (context) => const ProfilePage(),
               '/categories': (context) => const CategoriesPage(),
+              '/add-expense': (context) => const AddExpensePage(),
             },
             debugShowCheckedModeBanner: false,
           );

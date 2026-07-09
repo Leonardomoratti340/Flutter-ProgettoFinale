@@ -1,33 +1,127 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+import '../viewmodels/expense_viewmodel.dart';
+import '../viewmodels/category_view_model.dart';
+import '../utils/ui_utils.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
   @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  bool _didScheduleLoad = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    if (!_didScheduleLoad) {
+      _didScheduleLoad = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<ExpenseViewModel>().loadExpenses();
+        context.read<CategoryViewModel>().loadCategories();
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final expVM = context.watch<ExpenseViewModel>();
+    final catVM = context.watch<CategoryViewModel>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body: _buildBody(expVM, catVM),
+      
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.pushNamed(context, '/add-expense'),
+        elevation: 4,
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            ElevatedButton.icon(
-              onPressed: () => Navigator.pushNamed(context, '/profile'),
-              icon: const Icon(Icons.person),
-              label: const Text('Profilo'),
+            IconButton(
+              icon: const Icon(Icons.home),
+              color: Theme.of(context).primaryColor,
+              onPressed: () {},
             ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () => Navigator.pushNamed(context, '/categories'),
+            IconButton(
               icon: const Icon(Icons.category),
-              label: const Text('Guarda categorie'),
+              onPressed: () => Navigator.pushNamed(context, '/categories'),
+            ),
+            const SizedBox(width: 48),
+            IconButton(
+              icon: const Icon(Icons.bar_chart),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: const Icon(Icons.person),
+              onPressed: () => Navigator.pushNamed(context, '/profile'),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildBody(ExpenseViewModel expVM, CategoryViewModel catVM) {
+    if (expVM.isLoading && expVM.expenses.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (expVM.expenses.isEmpty) {
+      return const Center(child: Text('Nessuna spesa registrata. Aggiungi una spesa per iniziare.'));
+    }
+
+    return ListView.builder(
+      itemCount: expVM.expenses.length,
+      itemBuilder: (context, index) {
+        final expense = expVM.expenses[index];
+        
+        final category = catVM.categories.firstWhere(
+          (c) => c.id == expense.categoryId,
+          orElse: () => catVM.categories.first,
+        );
+
+        final catIcon = UIUtils.getIcon(category.icon);
+        final catColor = UIUtils.parseColor(category.color);
+
+        return ListTile(
+          leading: CircleAvatar(
+            backgroundColor: catColor.withOpacity(0.2),
+            child: Icon(catIcon, color: catColor),
+          ),
+          title: Text(
+            category.name,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text(
+            expense.description?.isNotEmpty == true 
+                ? expense.description! 
+                : DateFormat('dd MMM yyyy').format(expense.date),
+          ),
+          trailing: Text(
+            '- €${expense.amount.toStringAsFixed(2)}',
+            style: const TextStyle(
+              color: Colors.redAccent,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+        );
+      },
     );
   }
 }

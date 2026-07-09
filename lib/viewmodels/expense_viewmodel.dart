@@ -34,4 +34,19 @@ class ExpenseViewModel extends ChangeNotifier {
     _isLoading = value;
     notifyListeners();
   }
+
+  Future<bool> addExpense(Expense expense) async {
+    _setLoading(true);
+    bool success = false;
+    try {
+      await _repo.insertExpense(expense);
+      _expenses.insert(0, expense);
+      success = true;
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      _setLoading(false);
+    }
+    return success;
+  }
 }
