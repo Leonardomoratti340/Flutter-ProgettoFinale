@@ -64,7 +64,7 @@ class _HomeViewState extends State<HomeView> {
             const SizedBox(width: 48),
             IconButton(
               icon: const Icon(Icons.bar_chart),
-              onPressed: () {},
+              onPressed: () => Navigator.pushNamed(context, '/statistics'),
             ),
             IconButton(
               icon: const Icon(Icons.person),

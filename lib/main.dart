@@ -15,6 +15,8 @@ import 'viewmodels/category_view_model.dart';
 import 'views/categories/categories_view.dart';
 import 'models/expense.dart';
 import 'views/expenses/edit_expense_view.dart';
+import 'viewmodels/statistics_view_model.dart';
+import 'views/statistics/statistics_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +48,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
         ChangeNotifierProvider(create: (_) => CategoryViewModel()),
         ChangeNotifierProvider(create: (_) => ExpenseViewModel()),
+        ChangeNotifierProvider(create: (_) => StatisticsViewModel()),
       ],
       child: Consumer<AuthViewModel>(
         builder: (context, authVM, child) {
@@ -60,6 +63,7 @@ class MyApp extends StatelessWidget {
               '/profile': (context) => const ProfilePage(),
               '/categories': (context) => const CategoriesPage(),
               '/add-expense': (context) => const AddExpensePage(),
+              '/statistics': (context) => const StatisticsPage(),
               '/edit-expense': (context) {
                 final expense =
                     ModalRoute.of(context)!.settings.arguments as Expense;
