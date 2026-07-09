@@ -11,12 +11,21 @@ class HomeView extends StatelessWidget {
         centerTitle: true,
       ),
       body: Center(
-        child: ElevatedButton.icon(
-          onPressed: () {
-            Navigator.pushNamed(context, '/profile');
-          },
-          icon: const Icon(Icons.person),
-          label: const Text('Vai al Profilo'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton.icon(
+              onPressed: () => Navigator.pushNamed(context, '/profile'),
+              icon: const Icon(Icons.person),
+              label: const Text('Profilo'),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: () => Navigator.pushNamed(context, '/categories'),
+              icon: const Icon(Icons.category),
+              label: const Text('Guarda categorie'),
+            ),
+          ],
         ),
       ),
     );

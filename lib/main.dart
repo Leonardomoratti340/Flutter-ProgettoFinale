@@ -9,6 +9,8 @@ import 'viewmodels/auth_view_model.dart';
 import 'views/auth/login_view.dart';
 import 'views/auth/signup_view.dart';
 import 'views/home_view.dart';
+import 'viewmodels/category_view_model.dart';
+import 'views/categories/categories_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => CategoryViewModel()),
       ],
       child: Consumer<AuthViewModel>(
         builder: (context, authVM, child) {
@@ -50,6 +53,7 @@ class MyApp extends StatelessWidget {
               '/signup': (context) => const SignUpPage(),
               '/home': (context) => const HomeView(),
               '/profile': (context) => const ProfilePage(),
+              '/categories': (context) => const CategoriesPage(),
             },
             debugShowCheckedModeBanner: false,
           );
