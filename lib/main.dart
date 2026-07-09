@@ -13,21 +13,25 @@ import 'views/auth/signup_view.dart';
 import 'views/home_view.dart';
 import 'viewmodels/category_view_model.dart';
 import 'views/categories/categories_view.dart';
+import 'models/expense.dart';
+import 'views/expenses/edit_expense_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await dotenv.load(fileName: 'assets/.env');
-  
+
   final supabaseUrl = dotenv.env['SUPABASE_URL'];
   final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'];
-  
+
   if (supabaseUrl == null || supabaseAnonKey == null) {
-    throw Exception('Error in .env file: SUPABASE_URL or SUPABASE_ANON_KEY is missing!');
+    throw Exception(
+      'Error in .env file: SUPABASE_URL or SUPABASE_ANON_KEY is missing!',
+    );
   }
-  
+
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
-  
+
   runApp(const MyApp());
 }
 
@@ -47,9 +51,7 @@ class MyApp extends StatelessWidget {
         builder: (context, authVM, child) {
           return MaterialApp(
             title: 'Aullet',
-            theme: ThemeData(
-              useMaterial3: true,
-            ),
+            theme: ThemeData(useMaterial3: true),
             home: authVM.isLoggedIn ? const HomeView() : const LoginPage(),
             routes: {
               '/login': (context) => const LoginPage(),
@@ -58,6 +60,11 @@ class MyApp extends StatelessWidget {
               '/profile': (context) => const ProfilePage(),
               '/categories': (context) => const CategoriesPage(),
               '/add-expense': (context) => const AddExpensePage(),
+              '/edit-expense': (context) {
+                final expense =
+                    ModalRoute.of(context)!.settings.arguments as Expense;
+                return EditExpensePage(expense: expense);
+              },
             },
             debugShowCheckedModeBanner: false,
           );

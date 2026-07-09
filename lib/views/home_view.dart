@@ -98,27 +98,51 @@ class _HomeViewState extends State<HomeView> {
         final catIcon = UIUtils.getIcon(category.icon);
         final catColor = UIUtils.parseColor(category.color);
 
-        return ListTile(
-          leading: CircleAvatar(
-            backgroundColor: catColor.withOpacity(0.2),
-            child: Icon(catIcon, color: catColor),
+        return Dismissible(
+          key: Key(expense.id),
+          direction: DismissDirection.endToStart,
+          background: Container(
+            color: Colors.red,
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: 20),
+            child: const Icon(Icons.delete, color: Colors.white),
           ),
-          title: Text(
-            category.name,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          subtitle: Text(
-            expense.description?.isNotEmpty == true 
-                ? expense.description! 
-                : DateFormat('dd MMM yyyy').format(expense.date),
-          ),
-          trailing: Text(
-            '- €${expense.amount.toStringAsFixed(2)}',
-            style: const TextStyle(
-              color: Colors.redAccent,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+          onDismissed: (direction) async {
+            await context.read<ExpenseViewModel>().deleteExpense(expense.id);
+            if (!context.mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Spesa eliminata con successo.')),
+            );
+          },
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: catColor.withOpacity(0.2),
+              child: Icon(catIcon, color: catColor),
             ),
+            title: Text(
+              category.name,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(
+              expense.description?.isNotEmpty == true 
+                  ? expense.description! 
+                  : DateFormat('dd MMM yyyy').format(expense.date),
+            ),
+            trailing: Text(
+              '- €${expense.amount.toStringAsFixed(2)}',
+              style: const TextStyle(
+                color: Colors.redAccent,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            onTap: () {
+              Navigator.pushNamed(
+                context, 
+                '/edit-expense', 
+                arguments: expense,
+              );
+            },
           ),
         );
       },

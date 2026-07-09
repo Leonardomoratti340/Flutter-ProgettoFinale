@@ -39,13 +39,45 @@ class ExpenseViewModel extends ChangeNotifier {
     _setLoading(true);
     bool success = false;
     try {
-      await _repo.insertExpense(expense);
-      _expenses.insert(0, expense);
+      final insertedExpense = await _repo.insertExpense(expense);
+      _expenses.insert(0, insertedExpense);
       success = true;
     } catch (e) {
       _errorMessage = e.toString();
     } finally {
       _setLoading(false);
+    }
+    return success;
+  }
+
+  Future<bool> updateExpense(Expense expense) async {
+    _setLoading(true);
+    bool success = false;
+    try {
+      await _repo.updateExpense(expense);
+      final index = _expenses.indexWhere((e) => e.id == expense.id);
+      if (index != -1) {
+        _expenses[index] = expense;
+      }
+      success = true;
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      _setLoading(false);
+    }
+    return success;
+  }
+
+  Future<bool> deleteExpense(String id) async {
+    bool success = false;
+    try {
+      await _repo.deleteExpense(id);
+      _expenses.removeWhere((e) => e.id == id);
+      notifyListeners();
+      success = true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
     }
     return success;
   }
