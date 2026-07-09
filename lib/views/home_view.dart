@@ -8,9 +8,16 @@ class HomeView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
+        centerTitle: true,
       ),
-      body: const Center(
-        child: Text('Benvenuto nella home'),
+      body: Center(
+        child: ElevatedButton.icon(
+          onPressed: () {
+            Navigator.pushNamed(context, '/profile');
+          },
+          icon: const Icon(Icons.person),
+          label: const Text('Vai al Profilo'),
+        ),
       ),
     );
   }
