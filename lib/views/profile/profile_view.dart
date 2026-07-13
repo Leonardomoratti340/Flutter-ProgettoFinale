@@ -73,6 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         alignment: Alignment.bottomRight,
                         children: [
                           CircleAvatar(
+                            key: ValueKey(vm.profile?.avatarUrl),
                             radius: 50,
                             backgroundImage: vm.profile?.avatarUrl != null
                                 ? NetworkImage(vm.profile!.avatarUrl!)

@@ -47,6 +47,8 @@ class ProfileViewModel extends ChangeNotifier {
     try {
       _profile!.displayName = newName.trim();
       await _repo.updateProfile(_profile!);
+
+      notifyListeners();
     } catch (e) {
       _errorMessage = e.toString();
     } finally {
@@ -83,6 +85,8 @@ class ProfileViewModel extends ChangeNotifier {
       _profile!.avatarUrl = '$publicUrl?t=${DateTime.now().millisecondsSinceEpoch}';
       
       await _repo.updateProfile(_profile!);
+
+      notifyListeners();
 
     } catch (e) {
       _errorMessage = e.toString();

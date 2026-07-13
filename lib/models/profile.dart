@@ -19,6 +19,7 @@ class Profile {
   );
 
   Map<String, dynamic> toMap() => {
+    'user_id': userId,
     'display_name': displayName,
     'avatar_url': avatarUrl,
   };
